@@ -22,22 +22,34 @@ var albums = []album{
 	{ID: "3", Title: "Sarah Vaughan and Clifford Brown", Artist: "Sarah Vaughan", Price: 39.99},
 }
 
-func getAlbums(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK, albums)
+func getAlbums(ctx *gin.Context) {
+	ctx.IndentedJSON(http.StatusOK, albums)
+}
+
+func postAlbums(ctx *gin.Context) {
+	var newAlbum album
+
+	if err := ctx.BindJSON(&newAlbum); err != nil {
+		return
+	}
+
+	albums = append(albums, newAlbum)
+	ctx.IndentedJSON(http.StatusCreated, newAlbum)
 }
 
 func main() {
 	r := gin.Default()
-	r.GET("/ping", func(c *gin.Context) {
-		c.JSON(200, gin.H{
+	r.GET("/ping", func(ctx *gin.Context) {
+		ctx.JSON(200, gin.H{
 			"message": "pong",
 		})
 	})
 	r.GET("/albums", getAlbums)
+	r.POST("/albums", postAlbums)
 
 	// listen and serve on 0.0.0.0:8080
 	// r.Run()
 
-	// Both will run on "localhost:8080", but specifying 127.0.0.0:8080 will keep windows from prompting firewall popups everytime we run our server.
+	// 💡 Note:  Both will run on "localhost:8080", but specifying 127.0.0.0:8080 will keep windows from prompting firewall popups everytime we run our server.
 	r.Run("127.0.0.1:8080")
 }
