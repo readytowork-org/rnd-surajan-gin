@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"rnd-surajan-gin/infrastucture"
 
 	"github.com/gin-gonic/gin"
 )
@@ -55,6 +56,10 @@ func getAlbumById(ctx *gin.Context) {
 }
 
 func main() {
+	// Initialize Env
+	infrastucture.EnvInit()
+
+	// Gin Server
 	r := gin.Default()
 	r.GET("/ping", func(ctx *gin.Context) {
 		ctx.JSON(200, gin.H{
@@ -67,11 +72,11 @@ func main() {
 
 	// listen and serve on 0.0.0.0:8080
 	// r.Run()
-
 	/*
 		💡 Note: All the r.run code (above & below) will run on "localhost:8080".
 		But, specifying "127.0.0.0:8080" or "localhost: 8080" will keep windows from prompting firewall popups everytime we run our server.
 	*/
 	// r.Run("127.0.0.1:8080")
-	r.Run("localhost: 8080")
+	// r.Run("localhost:8080")
+	r.Run(infrastucture.GetBaseUrl())
 }
