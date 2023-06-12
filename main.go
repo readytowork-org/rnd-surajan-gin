@@ -22,19 +22,36 @@ var albums = []album{
 	{ID: "3", Title: "Sarah Vaughan and Clifford Brown", Artist: "Sarah Vaughan", Price: 39.99},
 }
 
+// GET albums
 func getAlbums(ctx *gin.Context) {
 	ctx.IndentedJSON(http.StatusOK, albums)
 }
 
+// POST an album
 func postAlbums(ctx *gin.Context) {
 	var newAlbum album
 
+	// 💡 Note: Here semicolon ";" is used to separate the initialization statement and the actual conditional statement.
 	if err := ctx.BindJSON(&newAlbum); err != nil {
 		return
 	}
 
 	albums = append(albums, newAlbum)
 	ctx.IndentedJSON(http.StatusCreated, newAlbum)
+}
+
+// GET a specific album
+func getAlbumById(ctx *gin.Context) {
+	id := ctx.Param("id")
+	for _, a := range albums {
+		if a.ID == id {
+			ctx.IndentedJSON(http.StatusOK, a)
+			return
+		}
+	}
+	ctx.JSON(http.StatusNotFound, gin.H{
+		"message": "Album not found",
+	})
 }
 
 func main() {
@@ -45,11 +62,16 @@ func main() {
 		})
 	})
 	r.GET("/albums", getAlbums)
+	r.GET("/albums/:id", getAlbumById)
 	r.POST("/albums", postAlbums)
 
 	// listen and serve on 0.0.0.0:8080
 	// r.Run()
 
-	// 💡 Note:  Both will run on "localhost:8080", but specifying 127.0.0.0:8080 will keep windows from prompting firewall popups everytime we run our server.
-	r.Run("127.0.0.1:8080")
+	/*
+		💡 Note: All the r.run code (above & below) will run on "localhost:8080".
+		But, specifying "127.0.0.0:8080" or "localhost: 8080" will keep windows from prompting firewall popups everytime we run our server.
+	*/
+	// r.Run("127.0.0.1:8080")
+	r.Run("localhost: 8080")
 }
