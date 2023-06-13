@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 	"rnd-surajan-gin/infrastucture"
 
@@ -55,6 +56,28 @@ func getAlbumById(ctx *gin.Context) {
 	})
 }
 
+// DELETE a specific album
+func deleteAlbumById(ctx *gin.Context) {
+	id := ctx.Param("id")
+	indexToDelete := -1
+	for i, a := range albums {
+		if a.ID == id {
+			indexToDelete = i
+		}
+	}
+	// Remove the item from the slice if found
+	if indexToDelete != -1 {
+		albums = append(albums[:indexToDelete], albums[indexToDelete+1:]...)
+		ctx.JSON(http.StatusOK, gin.H{
+			"message": fmt.Sprintf("Successfully deleted album of id: %s", id),
+		})
+	} else {
+		ctx.JSON(http.StatusNotFound, gin.H{
+			"message": "Album not found",
+		})
+	}
+}
+
 func main() {
 	// Initialize Env
 	infrastucture.EnvInit()
@@ -69,6 +92,7 @@ func main() {
 	r.GET("/albums", getAlbums)
 	r.GET("/albums/:id", getAlbumById)
 	r.POST("/albums", postAlbums)
+	r.DELETE("/albums/:id", deleteAlbumById)
 
 	// listen and serve on 0.0.0.0:8080
 	// r.Run()
