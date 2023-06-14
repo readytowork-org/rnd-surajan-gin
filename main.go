@@ -89,6 +89,16 @@ func main() {
 			"message": "pong",
 		})
 	})
+
+	// Using Query Parameters
+	r.GET("/welcome", func(ctx *gin.Context) {
+		// This puts "Guest" in fName if "?firstname=" does not exist in our request query params.
+		fName := ctx.DefaultQuery("firstname", "Guest")
+		lName := ctx.Query("lastname")
+		ctx.String(http.StatusOK, "Welcome %s %s", fName, lName)
+	})
+
+	// Album Routes
 	r.GET("/albums", getAlbums)
 	r.GET("/albums/:id", getAlbumById)
 	r.POST("/albums", postAlbums)
