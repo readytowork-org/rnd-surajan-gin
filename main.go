@@ -91,7 +91,7 @@ func main() {
 	})
 
 	// Using Query Parameters
-	r.GET("/welcome", func(ctx *gin.Context) {
+	r.GET("/welcome-home", func(ctx *gin.Context) {
 		// This puts "Guest" in fName if "?firstname=" does not exist in our request query params.
 		fName := ctx.DefaultQuery("firstname", "Guest")
 		lName := ctx.Query("lastname")
