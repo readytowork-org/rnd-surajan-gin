@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"rnd-surajan-gin/database"
 	"rnd-surajan-gin/infrastucture"
 	"rnd-surajan-gin/models"
 
@@ -79,16 +80,17 @@ func deleteAlbumById(ctx *gin.Context) {
 	}
 }
 
-func main() {
+func init() {
 	// Initialize Env
 	infrastucture.EnvInit()
-
 	// DB connection
-	db := infrastucture.ConnectDB()
-
+	database.ConnectDB()
 	// Migrate the schema
-	db.AutoMigrate(&models.Task{})
+	database.DB.AutoMigrate(&models.Task{})
+	database.DB.Create(&models.Task{Title: "Hello"})
+}
 
+func main() {
 	// Gin Server
 	r := gin.Default()
 	r.GET("/ping", func(ctx *gin.Context) {
