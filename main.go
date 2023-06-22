@@ -4,10 +4,9 @@ import (
 	"fmt"
 	"net/http"
 	"rnd-surajan-gin/infrastucture"
+	"rnd-surajan-gin/models"
 
 	"github.com/gin-gonic/gin"
-	"gorm.io/driver/mysql"
-	"gorm.io/gorm"
 )
 
 // Album Struct
@@ -80,28 +79,15 @@ func deleteAlbumById(ctx *gin.Context) {
 	}
 }
 
-type Product struct {
-	gorm.Model
-	Code  string
-	Price uint
-}
-
 func main() {
 	// Initialize Env
 	infrastucture.EnvInit()
 
 	// DB connection
-	dsn := "root:password@123@tcp(localhost:3306)/rnd-gin?charset=utf8mb4&parseTime=True&loc=Local"
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
-	if err != nil {
-		panic("failed to connect database")
-	}
+	db := infrastucture.ConnectDB()
 
 	// Migrate the schema
-	db.AutoMigrate(&Product{})
-
-	// Create
-	db.Create(&Product{Code: "D42", Price: 100})
+	db.AutoMigrate(&models.Task{})
 
 	// Gin Server
 	r := gin.Default()
