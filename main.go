@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"rnd-surajan-gin/api/services"
 	"rnd-surajan-gin/database"
 	"rnd-surajan-gin/infrastucture"
 	"rnd-surajan-gin/models"
@@ -87,7 +88,6 @@ func init() {
 	database.ConnectDB()
 	// Migrate the schema
 	database.DB.AutoMigrate(&models.Task{})
-	database.DB.Create(&models.Task{Title: "Hello"})
 }
 
 func main() {
@@ -112,6 +112,9 @@ func main() {
 	r.GET("/albums/:id", getAlbumById)
 	r.POST("/albums", postAlbums)
 	r.DELETE("/albums/:id", deleteAlbumById)
+
+	// Task Routes
+	r.POST("/task", services.CreateTaskService)
 
 	// listen and serve on 0.0.0.0:8080
 	// r.Run()
