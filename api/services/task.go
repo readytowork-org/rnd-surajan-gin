@@ -35,3 +35,20 @@ func CreateTaskService(ctx *gin.Context) {
 		"task": task,
 	})
 }
+
+func GetAllTasksService(ctx *gin.Context) {
+	// Get all tasks
+	var tasks []models.Task
+	result := database.DB.Find(&tasks)
+	// Error Handling
+	if result.Error != nil {
+		ctx.JSON(http.StatusNotFound, gin.H{
+			"error": "Tasks could not be found",
+		})
+		return
+	}
+	// Send found "Tasks" as response.
+	ctx.JSON(http.StatusOK, gin.H{
+		"data": tasks,
+	})
+}

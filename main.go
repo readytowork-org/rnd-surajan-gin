@@ -114,9 +114,10 @@ func main() {
 	r.DELETE("/albums/:id", deleteAlbumById)
 
 	// Task Routes
-	r.POST("/task", services.CreateTaskService)
+	r.GET("/tasks", services.GetAllTasksService)
+	r.POST("/tasks", services.CreateTaskService)
 
-	// listen and serve on 0.0.0.0:8080
+	// Listen and serve on "0.0.0.0:8080"
 	// r.Run()
 	/*
 		💡 Note: All the r.run code (above & below) will run on "localhost:8080".
