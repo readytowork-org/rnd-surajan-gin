@@ -114,8 +114,10 @@ func main() {
 	r.DELETE("/albums/:id", deleteAlbumById)
 
 	// Task Routes
-	r.GET("/tasks", services.GetAllTasksService)
-	r.POST("/tasks", services.CreateTaskService)
+	r.GET("/tasks", services.GetAllTasks)
+	r.GET("/tasks/:id", services.GetTaskById)
+	r.POST("/tasks", services.CreateTask)
+	r.DELETE("/tasks/:id", services.DeleteTaskById)
 
 	// Listen and serve on "0.0.0.0:8080"
 	// r.Run()
