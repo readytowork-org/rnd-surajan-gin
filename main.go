@@ -117,6 +117,7 @@ func main() {
 	r.GET("/tasks", services.GetAllTasks)
 	r.GET("/tasks/:id", services.GetTaskById)
 	r.POST("/tasks", services.CreateTask)
+	r.PATCH("/tasks/:id", services.UpdateTaskById)
 	r.DELETE("/tasks/:id", services.DeleteTaskById)
 
 	// Listen and serve on "0.0.0.0:8080"

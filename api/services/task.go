@@ -12,6 +12,10 @@ type CreateTaskRequest struct {
 	models.Task
 }
 
+type UpdateTaskRequest struct {
+	Title string `json:"title" binding:"required"`
+}
+
 func CreateTask(ctx *gin.Context) {
 	var body CreateTaskRequest
 	// Validate request body.
@@ -67,6 +71,41 @@ func GetTaskById(ctx *gin.Context) {
 		return
 	}
 	// Send found "Task" as response.
+	ctx.JSON(http.StatusOK, gin.H{
+		"data": task,
+	})
+}
+
+func UpdateTaskById(ctx *gin.Context) {
+	// Get Id from route parameters.
+	id := ctx.Param("id")
+	// Get Task by id i.e. Primary Key.
+	var task models.Task
+	result := database.DB.First(&task, id)
+	// Error Handling.
+	if result.Error != nil {
+		ctx.JSON(http.StatusNotFound, gin.H{
+			"error": "Task could not be found",
+		})
+		return
+	}
+	// Validate request body.
+	var body UpdateTaskRequest
+	if err := ctx.BindJSON(&body); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	// Update "task" model with the given "body".
+	updateResult := database.DB.Model(&task).Updates(body)
+	if updateResult.Error != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": "Could not update task",
+		})
+		return
+	}
+	// Send found and updated "Task" as response.
 	ctx.JSON(http.StatusOK, gin.H{
 		"data": task,
 	})
