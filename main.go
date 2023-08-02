@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"rnd-surajan-gin/api/controllers"
 	"rnd-surajan-gin/api/services"
 	"rnd-surajan-gin/database"
 	"rnd-surajan-gin/infrastucture"
@@ -37,11 +38,14 @@ func main() {
 	})
 
 	// Task Routes
-	r.GET("/tasks", services.GetAllTasks)
-	r.GET("/tasks/:id", services.GetTaskById)
+	r.GET("/tasks", controllers.GetAllTasks)
+	r.GET("/tasks/:id", controllers.GetTaskById)
 	r.POST("/tasks", services.CreateTask)
 	r.PATCH("/tasks/:id", services.UpdateTaskById)
-	r.DELETE("/tasks/:id", services.DeleteTaskById)
+	r.DELETE("/tasks/:id", controllers.DeleteTaskById)
+
+	// Test Request
+	r.POST("/tasks-service", controllers.CreateTask)
 
 	// Listen and serve on "0.0.0.0:8080"
 	// r.Run()
