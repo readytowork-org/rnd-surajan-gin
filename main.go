@@ -37,18 +37,11 @@ func main() {
 	})
 
 	// Task Routes
-	r.GET("/tasks", controllers.GetAllTasks)
-	r.GET("/tasks/:id", controllers.GetTaskById)
-	r.POST("/tasks", controllers.CreateTask)
-	r.PATCH("/tasks/:id", controllers.UpdateTaskById)
-	r.DELETE("/tasks/:id", controllers.DeleteTaskById)
-
-	// Test
-	r.GET("/test-get", controllers.NewTaskController().GetAllTasksController)
-	r.GET("/test-get/:id", controllers.NewTaskController().GetTaskByIdController)
-	r.POST("/test-post", controllers.NewTaskController().CreateTaskController)
-	r.PATCH("/test-patch/:id", controllers.NewTaskController().UpdateTaskByIdController)
-	r.DELETE("/test-delete/:id", controllers.NewTaskController().DeleteTaskByIdController)
+	r.GET("/tasks", controllers.NewTaskController().GetAllTasks)
+	r.GET("/tasks/:id", controllers.NewTaskController().GetTaskById)
+	r.POST("/tasks", controllers.NewTaskController().CreateTask)
+	r.PATCH("/tasks/:id", controllers.NewTaskController().UpdateTaskById)
+	r.DELETE("/tasks/:id", controllers.NewTaskController().DeleteTaskById)
 
 	// Listen and serve on "0.0.0.0:8080"
 	// r.Run()
