@@ -43,6 +43,13 @@ func main() {
 	r.PATCH("/tasks/:id", controllers.UpdateTaskById)
 	r.DELETE("/tasks/:id", controllers.DeleteTaskById)
 
+	// Test
+	r.GET("/test-get", controllers.NewTaskController().GetAllTasksController)
+	r.GET("/test-get/:id", controllers.NewTaskController().GetTaskByIdController)
+	r.POST("/test-post", controllers.NewTaskController().CreateTaskController)
+	r.PATCH("/test-patch/:id", controllers.NewTaskController().UpdateTaskByIdController)
+	r.DELETE("/test-delete/:id", controllers.NewTaskController().DeleteTaskByIdController)
+
 	// Listen and serve on "0.0.0.0:8080"
 	// r.Run()
 	/*
