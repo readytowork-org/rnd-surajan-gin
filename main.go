@@ -2,7 +2,7 @@ package main
 
 import (
 	"net/http"
-	"rnd-surajan-gin/api/controllers"
+	"rnd-surajan-gin/api/routes"
 	"rnd-surajan-gin/database"
 	"rnd-surajan-gin/infrastucture"
 	"rnd-surajan-gin/models"
@@ -22,11 +22,6 @@ func init() {
 func main() {
 	// Gin Server
 	r := gin.Default()
-	r.GET("/ping", func(ctx *gin.Context) {
-		ctx.JSON(200, gin.H{
-			"message": "pong",
-		})
-	})
 
 	// Using Query Parameters
 	r.GET("/welcome-home", func(ctx *gin.Context) {
@@ -36,12 +31,8 @@ func main() {
 		ctx.String(http.StatusOK, "Welcome %s %s", fName, lName)
 	})
 
-	// Task Routes
-	r.GET("/tasks", controllers.NewTaskController().GetAllTasks)
-	r.GET("/tasks/:id", controllers.NewTaskController().GetTaskById)
-	r.POST("/tasks", controllers.NewTaskController().CreateTask)
-	r.PATCH("/tasks/:id", controllers.NewTaskController().UpdateTaskById)
-	r.DELETE("/tasks/:id", controllers.NewTaskController().DeleteTaskById)
+	// Routes
+	routes.TasksRouteSetup(r)
 
 	// Listen and serve on "0.0.0.0:8080"
 	// r.Run()
