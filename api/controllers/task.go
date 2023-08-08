@@ -9,7 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// For Dependency Injection
+// Dependency Injection
 type TaskController struct {
 	taskService services.TaskService
 }
@@ -18,7 +18,6 @@ func NewTaskController() TaskController {
 	return TaskController{taskService: services.NewTaskService()}
 }
 
-// Using Dependency Injection
 func (cc TaskController) CreateTask(ctx *gin.Context) {
 	var body dtos.CreateTaskRequest
 	// Validate request body.

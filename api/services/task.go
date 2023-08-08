@@ -8,7 +8,7 @@ import (
 	"gorm.io/gorm"
 )
 
-// For Dependency Injection
+// Dependency Injection
 type TaskService struct {
 	// DB database.DB
 }
@@ -17,7 +17,6 @@ func NewTaskService() TaskService {
 	return TaskService{}
 }
 
-// Using Dependency Injection
 func (cc TaskService) CreateTask(task models.Task) (data models.Task, err error) {
 	return task, database.DB.Create(&task).Error
 }
