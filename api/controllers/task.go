@@ -14,8 +14,11 @@ type TaskController struct {
 	taskService services.TaskService
 }
 
-func NewTaskController() TaskController {
-	return TaskController{taskService: services.NewTaskService()}
+//	func NewTaskController() TaskController {
+//		return TaskController{taskService: services.NewTaskService()}
+//	}
+func NewTaskController(taskService services.TaskService) TaskController {
+	return TaskController{taskService: taskService}
 }
 
 func (cc TaskController) CreateTask(ctx *gin.Context) {

@@ -6,11 +6,19 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func TasksRouteSetup(r *gin.Engine) {
+type TaskRoutes struct {
+	taskController controllers.TaskController
+}
+
+func NewTaskRoutes(taskController controllers.TaskController) TaskRoutes {
+	return TaskRoutes{taskController: taskController}
+}
+
+func (cc TaskRoutes) TasksRouteSetup(r *gin.Engine) {
 	// Task Routes
-	r.GET("/tasks", controllers.NewTaskController().GetAllTasks)
-	r.GET("/tasks/:id", controllers.NewTaskController().GetTaskById)
-	r.POST("/tasks", controllers.NewTaskController().CreateTask)
-	r.PATCH("/tasks/:id", controllers.NewTaskController().UpdateTaskById)
-	r.DELETE("/tasks/:id", controllers.NewTaskController().DeleteTaskById)
+	r.GET("/tasks", cc.taskController.GetAllTasks)
+	r.GET("/tasks/:id", cc.taskController.GetTaskById)
+	r.POST("/tasks", cc.taskController.CreateTask)
+	r.PATCH("/tasks/:id", cc.taskController.UpdateTaskById)
+	r.DELETE("/tasks/:id", cc.taskController.DeleteTaskById)
 }
