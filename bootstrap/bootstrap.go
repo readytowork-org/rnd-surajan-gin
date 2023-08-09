@@ -3,9 +3,10 @@ package bootstrap
 import (
 	"context"
 	"rnd-surajan-gin/api/controllers"
+	"rnd-surajan-gin/api/infrastructure"
 	"rnd-surajan-gin/api/routes"
 	"rnd-surajan-gin/api/services"
-	"rnd-surajan-gin/infrastucture"
+	"rnd-surajan-gin/environment"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/fx"
@@ -14,7 +15,7 @@ import (
 // All the necessary arguments for each constructor functions is provided using this code.
 /* For Eg: For "NewTaskController" constructor func, it needs "services.TaskService",
 which will be provided once we include "services.Module" in "fx.Options" below 👇. */
-var Module = fx.Options(controllers.Module, services.Module, routes.Module, fx.Invoke(bootstrap))
+var Module = fx.Options(infrastructure.Module, controllers.Module, services.Module, routes.Module, fx.Invoke(bootstrap))
 
 func bootstrap(lifecycle fx.Lifecycle, taskRoutes routes.TaskRoutes) {
 	lifecycle.Append(fx.Hook{
@@ -26,7 +27,8 @@ func bootstrap(lifecycle fx.Lifecycle, taskRoutes routes.TaskRoutes) {
 				// Routes
 				taskRoutes.TasksRouteSetup(r)
 				// Listen and serve on "localhost:8080"
-				r.Run(infrastucture.GetBaseUrl())
+				// Specifying "127.0.0.0:8080" or "localhost: 8080" will keep windows from prompting firewall popups everytime we run our server.
+				r.Run(environment.GetBaseUrl())
 			}()
 
 			return nil
