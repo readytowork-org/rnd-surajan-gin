@@ -18,3 +18,7 @@ func EnvInit() {
 func GetBaseUrl() string {
 	return os.Getenv("BASE_URL")
 }
+
+func GetDatabaseEnv() []string {
+	return []string{os.Getenv("DB_USERNAME"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_HOST"), os.Getenv("DB_PORT"), os.Getenv("DB_NAME")}
+}
