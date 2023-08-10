@@ -14,7 +14,7 @@ func NewTaskRoutes(router infrastructure.Router, taskController controllers.Task
 	return TaskRoutes{router: router, taskController: taskController}
 }
 
-func (cc TaskRoutes) TasksRouteSetup() {
+func (cc TaskRoutes) Setup() {
 	// Task Routes
 	cc.router.Gin.GET("/tasks", cc.taskController.GetAllTasks)
 	cc.router.Gin.GET("/tasks/:id", cc.taskController.GetTaskById)

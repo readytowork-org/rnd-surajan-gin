@@ -16,13 +16,13 @@ import (
 which will be provided once we include "services.Module" in "fx.Options" below 👇. */
 var Module = fx.Options(infrastructure.Module, controllers.Module, services.Module, routes.Module, fx.Invoke(bootstrap))
 
-func bootstrap(lifecycle fx.Lifecycle, router infrastructure.Router, taskRoutes routes.TaskRoutes) {
+func bootstrap(lifecycle fx.Lifecycle, router infrastructure.Router, routes routes.Routes) {
 	lifecycle.Append(fx.Hook{
 		OnStart: func(ctx context.Context) error {
 			// If we don't put all these inside a go routine, go will throw err: "context deadline exceeded", after server stays open for sometime.
 			go func() {
 				// Routes
-				taskRoutes.TasksRouteSetup()
+				routes.Setup()
 				// Listen and serve on "localhost:8080"
 				// Specifying "127.0.0.0:8080" or "localhost: 8080" will keep windows from prompting firewall popups everytime we run our server.
 				router.Gin.Run(environment.GetBaseUrl())
