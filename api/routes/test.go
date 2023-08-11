@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"rnd-surajan-gin/api/infrastructure"
+	"rnd-surajan-gin/infrastructure"
 
 	"github.com/gin-gonic/gin"
 )

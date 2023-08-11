@@ -2,7 +2,7 @@ package routes
 
 import (
 	"rnd-surajan-gin/api/controllers"
-	"rnd-surajan-gin/api/infrastructure"
+	"rnd-surajan-gin/infrastructure"
 )
 
 type TaskRoutes struct {

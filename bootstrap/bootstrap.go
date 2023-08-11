@@ -3,10 +3,10 @@ package bootstrap
 import (
 	"context"
 	"rnd-surajan-gin/api/controllers"
-	"rnd-surajan-gin/api/infrastructure"
 	"rnd-surajan-gin/api/routes"
 	"rnd-surajan-gin/api/services"
 	"rnd-surajan-gin/environment"
+	"rnd-surajan-gin/infrastructure"
 
 	"go.uber.org/fx"
 )
@@ -16,11 +16,13 @@ import (
 which will be provided once we include "services.Module" in "fx.Options" below 👇. */
 var Module = fx.Options(infrastructure.Module, controllers.Module, services.Module, routes.Module, fx.Invoke(bootstrap))
 
-func bootstrap(lifecycle fx.Lifecycle, router infrastructure.Router, routes routes.Routes) {
+func bootstrap(lifecycle fx.Lifecycle, migrations infrastructure.Migrations, router infrastructure.Router, routes routes.Routes) {
 	lifecycle.Append(fx.Hook{
 		OnStart: func(ctx context.Context) error {
 			// If we don't put all these inside a go routine, go will throw err: "context deadline exceeded", after server stays open for sometime.
 			go func() {
+				// Migrate all models
+				migrations.Migrate()
 				// Routes
 				routes.Setup()
 				// Listen and serve on "localhost:8080"

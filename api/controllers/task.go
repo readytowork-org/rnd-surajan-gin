@@ -2,8 +2,8 @@ package controllers
 
 import (
 	"net/http"
-	"rnd-surajan-gin/api/dtos"
 	"rnd-surajan-gin/api/services"
+	"rnd-surajan-gin/dtos"
 	"rnd-surajan-gin/models"
 
 	"github.com/gin-gonic/gin"

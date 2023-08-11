@@ -1,8 +1,8 @@
 package services
 
 import (
-	"rnd-surajan-gin/api/dtos"
-	"rnd-surajan-gin/api/infrastructure"
+	"rnd-surajan-gin/dtos"
+	"rnd-surajan-gin/infrastructure"
 	"rnd-surajan-gin/models"
 
 	"gorm.io/gorm"
@@ -14,8 +14,6 @@ type TaskService struct {
 }
 
 func NewTaskService(db infrastructure.Database) TaskService {
-	// Migrate the schema
-	db.DB.AutoMigrate(&models.Task{})
 	return TaskService{db: db}
 }
 
