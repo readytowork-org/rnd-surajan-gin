@@ -13,4 +13,5 @@ func NewMigrations(db Database) Migrations {
 func (cc Migrations) Migrate() {
 	// Migrate "Task" model.
 	cc.db.DB.AutoMigrate(&models.Task{})
+	cc.db.DB.AutoMigrate(&models.User{})
 }
