@@ -17,6 +17,11 @@ func NewUserRoutes(router infrastructure.Router, userController controllers.User
 func (cc UserRoutes) Setup() {
 	// User Routes
 	routes := cc.router.Gin.Group("/users")
-	routes.GET("", cc.userController.GetAllUsers)
-	routes.POST("", cc.userController.CreateUser)
+	{
+		routes.GET("", cc.userController.GetAllUsers)
+		routes.GET("/:id", cc.userController.GetUserById)
+		routes.POST("", cc.userController.CreateUser)
+		routes.PATCH("/:id", cc.userController.UpdateUserById)
+		routes.DELETE("/:id", cc.userController.DeleteUserById)
+	}
 }

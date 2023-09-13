@@ -55,3 +55,73 @@ func (cc UserController) GetAllUsers(ctx *gin.Context) {
 		"data": users,
 	})
 }
+
+func (cc UserController) GetUserById(ctx *gin.Context) {
+	// Get Id from route parameters.
+	id := ctx.Param("id")
+	user, result := cc.userService.GetUserById(id)
+	// Error Handling.
+	if result.Error != nil {
+		ctx.JSON(http.StatusNotFound, gin.H{
+			"error": "User could not be found",
+		})
+		return
+	}
+	// Send found "User" as response.
+	ctx.JSON(http.StatusOK, gin.H{
+		"data": user,
+	})
+}
+
+func (cc UserController) UpdateUserById(ctx *gin.Context) {
+	// Get Id from route parameters.
+	id := ctx.Param("id")
+	// Validate request body.
+	var body dtos.UpdateUserRequest
+	if err := ctx.BindJSON(&body); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	data, findErr, updateErr := cc.userService.UpdateUserById(id, body)
+	// Error Handling.
+	if findErr != nil {
+		ctx.JSON(http.StatusNotFound, gin.H{
+			"error": "User could not be found",
+		})
+		return
+	}
+	if updateErr != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": "Could not update user",
+		})
+		return
+	}
+	// Send found and updated "User" as response.
+	ctx.JSON(http.StatusOK, gin.H{
+		"data": data,
+	})
+}
+
+func (cc UserController) DeleteUserById(ctx *gin.Context) {
+	// Get Id from route parameters.
+	id := ctx.Param("id")
+	result := cc.userService.DeleteUserById(id)
+	// Error Handling.
+	if result.Error != nil {
+		ctx.JSON(http.StatusNotFound, gin.H{
+			"error": "User could not be deleted",
+		})
+		return
+	} else if result.RowsAffected < 1 {
+		ctx.JSON(http.StatusNotFound, gin.H{
+			"error": "User could not be deleted because it could not be found.",
+		})
+		return
+	}
+	// Send success response.
+	ctx.JSON(http.StatusOK, gin.H{
+		"message": "User successfully deleted",
+	})
+}
