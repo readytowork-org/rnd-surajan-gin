@@ -40,3 +40,18 @@ func (cc UserController) CreateUser(ctx *gin.Context) {
 		"user": data,
 	})
 }
+
+func (cc UserController) GetAllUsers(ctx *gin.Context) {
+	users, result := cc.userService.GetAllUsers()
+	// Error Handling.
+	if result.Error != nil {
+		ctx.JSON(http.StatusNotFound, gin.H{
+			"error": "Users could not be found",
+		})
+		return
+	}
+	// Send found "Users" as response.
+	ctx.JSON(http.StatusOK, gin.H{
+		"data": users,
+	})
+}
