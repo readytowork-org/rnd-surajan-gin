@@ -31,7 +31,7 @@ func (cc TaskController) CreateTask(ctx *gin.Context) {
 		return
 	}
 	// Create Task.
-	task := models.Task{Title: body.Title}
+	task := models.Task{Title: body.Title, UserId: body.UserId}
 	data, err := cc.taskService.CreateTask(task)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{

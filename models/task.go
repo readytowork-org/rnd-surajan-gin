@@ -7,8 +7,9 @@ import (
 
 type Task struct {
 	gorm.Model
-	ID    uuid.UUID `gorm:"primarykey" json:"ID"`
-	Title string    `json:"title" binding:"required"`
+	ID     uuid.UUID `gorm:"primarykey" json:"ID"`
+	Title  string    `json:"title" binding:"required"`
+	UserId uuid.UUID `binding:"required"`
 }
 
 // BeforeCreate will set a UUID rather than numeric ID.
