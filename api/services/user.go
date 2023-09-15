@@ -46,3 +46,9 @@ func (cc UserService) DeleteUserById(id string) (result *gorm.DB) {
 	var user models.User
 	return cc.db.DB.Where("id = ?", id).Unscoped().Delete(&user)
 }
+
+func (cc UserService) LoginUser(email string, password string) (data models.User, result *gorm.DB) {
+	var user models.User
+	// We used "BINARY ?" because, only using "?" will match in case-insensitive way i.e. both "password" and "Password" will match.
+	return user, cc.db.DB.Where("email = BINARY ? AND password = BINARY ?", email, password).First(&user)
+}
