@@ -73,6 +73,23 @@ func (cc UserController) GetUserById(ctx *gin.Context) {
 	})
 }
 
+func (cc UserController) GetUserByIdWithPw(ctx *gin.Context) {
+	// Get Id from route parameters.
+	id := ctx.Param("id")
+	user, result := cc.userService.GetUserByIdWithPw(id)
+	// Error Handling.
+	if result.Error != nil {
+		ctx.JSON(http.StatusNotFound, gin.H{
+			"error": "User could not be found",
+		})
+		return
+	}
+	// Send found "User" as response.
+	ctx.JSON(http.StatusOK, gin.H{
+		"data": user,
+	})
+}
+
 func (cc UserController) UpdateUserById(ctx *gin.Context) {
 	// Get Id from route parameters.
 	id := ctx.Param("id")
