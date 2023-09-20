@@ -56,6 +56,21 @@ func (cc UserController) GetAllUsers(ctx *gin.Context) {
 	})
 }
 
+func (cc UserController) GetAllUsersWithPw(ctx *gin.Context) {
+	users, result := cc.userService.GetAllUsersWithPw()
+	// Error Handling.
+	if result.Error != nil {
+		ctx.JSON(http.StatusNotFound, gin.H{
+			"error": "Users could not be found",
+		})
+		return
+	}
+	// Send found "Users" as response.
+	ctx.JSON(http.StatusOK, gin.H{
+		"data": users,
+	})
+}
+
 func (cc UserController) GetUserById(ctx *gin.Context) {
 	// Get Id from route parameters.
 	id := ctx.Param("id")

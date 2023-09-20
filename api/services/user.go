@@ -20,12 +20,21 @@ func (cc UserService) CreateUser(user models.User) (data models.User, err error)
 	return user, cc.db.DB.Create(&user).Error
 }
 
-func (cc UserService) GetAllUsers() (data []models.User, result *gorm.DB) {
+// Get users without password
+func (cc UserService) GetAllUsers() (data []dtos.GetUserByIdResponse, result *gorm.DB) {
+	// This is for getting user without password. We create a separate struct. This is also called "Smart Select Fields" in Gorm.
+	var usersResponse []dtos.GetUserByIdResponse
+	// Preload all "Tasks" associated with each "User" and send them along with the found users.
+	return usersResponse, cc.db.DB.Model(&models.User{}).Preload("Tasks").Find(&usersResponse)
+}
+
+func (cc UserService) GetAllUsersWithPw() (data []models.User, result *gorm.DB) {
 	var users []models.User
 	// Preload all "Tasks" associated with each "User" and send them along with the found users.
 	return users, cc.db.DB.Model(&models.User{}).Preload("Tasks").Find(&users)
 }
 
+// Get user without password
 func (cc UserService) GetUserById(id string) (data dtos.GetUserByIdResponse, result *gorm.DB) {
 	// This is for getting user without password. We create a separate struct. This is also called "Smart Select Fields" in Gorm.
 	var userResponse dtos.GetUserByIdResponse

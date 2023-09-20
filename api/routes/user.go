@@ -19,6 +19,7 @@ func (cc UserRoutes) Setup() {
 	routes := cc.router.Gin.Group("/users")
 	{
 		routes.GET("", cc.userController.GetAllUsers)
+		routes.GET("/withPw", cc.userController.GetAllUsersWithPw)
 		routes.GET("/withPw/:id", cc.userController.GetUserByIdWithPw)
 		routes.GET("/:id", cc.userController.GetUserById)
 		routes.POST("", cc.userController.CreateUser)
