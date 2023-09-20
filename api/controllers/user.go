@@ -157,27 +157,3 @@ func (cc UserController) DeleteUserById(ctx *gin.Context) {
 		"message": "User successfully deleted",
 	})
 }
-
-func (cc UserController) LoginUser(ctx *gin.Context) {
-	var body dtos.LoginUserRequest
-	// Validate request body.
-	if err := ctx.BindJSON(&body); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-	// Login or Find User
-	user, result := cc.userService.LoginUser(body.Email, body.Password)
-	// Error Handling.
-	if result.Error != nil {
-		ctx.JSON(http.StatusNotFound, gin.H{
-			"error": "User with those credentials could not be found",
-		})
-		return
-	}
-	// Send found "User" as response.
-	ctx.JSON(http.StatusOK, gin.H{
-		"data": user,
-	})
-}

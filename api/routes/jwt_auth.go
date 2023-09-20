@@ -6,18 +6,18 @@ import (
 )
 
 type JwtAuthRoutes struct {
-	router         infrastructure.Router
-	userController controllers.UserController
+	router            infrastructure.Router
+	jwtAuthController controllers.JwtAuthController
 }
 
-func NewJwtAuthRoutes(router infrastructure.Router, userController controllers.UserController) JwtAuthRoutes {
-	return JwtAuthRoutes{router: router, userController: userController}
+func NewJwtAuthRoutes(router infrastructure.Router, jwtAuthController controllers.JwtAuthController) JwtAuthRoutes {
+	return JwtAuthRoutes{router: router, jwtAuthController: jwtAuthController}
 }
 
 func (cc JwtAuthRoutes) Setup() {
 	// Jwt Auth Routes
 	routes := cc.router.Gin.Group("/login")
 	{
-		routes.POST("", cc.userController.LoginUser)
+		routes.POST("", cc.jwtAuthController.LoginWithJwt)
 	}
 }
