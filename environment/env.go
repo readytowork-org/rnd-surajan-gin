@@ -22,3 +22,7 @@ func GetBaseUrl() string {
 func GetDatabaseEnv() []string {
 	return []string{os.Getenv("DB_USERNAME"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_HOST"), os.Getenv("DB_PORT"), os.Getenv("DB_NAME")}
 }
+
+func GetJwtSecret() string {
+	return os.Getenv("JWT_SECRET")
+}
