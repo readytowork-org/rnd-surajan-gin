@@ -63,7 +63,7 @@ func (cc JwtAuthController) LoginWithJwt(ctx *gin.Context) {
 	accessToken, tokenErr := cc.jwtAuthService.GenerateToken(accessClaims, environment.GetJwtSecret())
 	if tokenErr != nil {
 		ctx.JSON(http.StatusNotFound, gin.H{
-			"error": "User could not be logged in. Error in token creation.",
+			"error": "User could not be logged in. Error creating token.",
 		})
 		return
 	}

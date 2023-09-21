@@ -2,21 +2,23 @@ package routes
 
 import (
 	"rnd-surajan-gin/api/controllers"
+	"rnd-surajan-gin/api/middlewares"
 	"rnd-surajan-gin/infrastructure"
 )
 
 type UserRoutes struct {
-	router         infrastructure.Router
-	userController controllers.UserController
+	router            infrastructure.Router
+	userController    controllers.UserController
+	jwtAuthMiddleware middlewares.JwtAuthMiddleware
 }
 
-func NewUserRoutes(router infrastructure.Router, userController controllers.UserController) UserRoutes {
-	return UserRoutes{router: router, userController: userController}
+func NewUserRoutes(router infrastructure.Router, userController controllers.UserController, jwtAuthMiddleware middlewares.JwtAuthMiddleware) UserRoutes {
+	return UserRoutes{router: router, userController: userController, jwtAuthMiddleware: jwtAuthMiddleware}
 }
 
 func (cc UserRoutes) Setup() {
 	// User Routes
-	routes := cc.router.Gin.Group("/users")
+	routes := cc.router.Gin.Group("/users", cc.jwtAuthMiddleware.HandleJwt)
 	{
 		routes.GET("", cc.userController.GetAllUsers)
 		routes.GET("/withPw", cc.userController.GetAllUsersWithPw)

@@ -11,7 +11,7 @@ type JwtAuthService struct {
 // 👇 This JwtClaims struct is used to generate the "payload" part of the jwt token.
 type JwtClaims struct {
 	jwt.RegisteredClaims
-	// Other claims like username or userid is generally additionally put here.
+	// Other claims like username, userid or even email is generally additionally put here.
 }
 
 func NewJwtAuthService() JwtAuthService {

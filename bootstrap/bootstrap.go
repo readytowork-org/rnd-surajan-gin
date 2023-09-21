@@ -3,6 +3,7 @@ package bootstrap
 import (
 	"context"
 	"rnd-surajan-gin/api/controllers"
+	"rnd-surajan-gin/api/middlewares"
 	"rnd-surajan-gin/api/routes"
 	"rnd-surajan-gin/api/services"
 	"rnd-surajan-gin/environment"
@@ -14,7 +15,7 @@ import (
 // All the necessary arguments for each constructor functions is provided using this code.
 /* For Eg: For "NewTaskController" constructor func, it needs "services.TaskService",
 which will be provided once we include "services.Module" in "fx.Options" below 👇. */
-var Module = fx.Options(infrastructure.Module, controllers.Module, services.Module, routes.Module, fx.Invoke(bootstrap))
+var Module = fx.Options(infrastructure.Module, controllers.Module, services.Module, middlewares.Module, routes.Module, fx.Invoke(bootstrap))
 
 func bootstrap(lifecycle fx.Lifecycle, migrations infrastructure.Migrations, router infrastructure.Router, routes routes.Routes) {
 	lifecycle.Append(fx.Hook{
