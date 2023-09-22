@@ -60,7 +60,7 @@ func (cc JwtAuthService) ParseAndVerifyToken(tokenString string, secret string) 
 		return []byte(secret), nil
 	})
 	if err != nil {
-		return nil, errors.New("signature invalid or in other words invalid token")
+		return nil, errors.New("invalid token")
 	}
 	return token, nil
 }

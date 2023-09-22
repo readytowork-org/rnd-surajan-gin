@@ -55,7 +55,7 @@ func (cc JwtAuthController) LoginWithJwt(ctx *gin.Context) {
 
 	// Create a new JWT claims (payload) for the token
 	accessClaims := services.JwtClaims{RegisteredClaims: jwt.RegisteredClaims{
-		ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Minute * 5)),
+		ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Minute * 30)),
 		ID:        fmt.Sprintf("%v", user.ID),
 	}}
 

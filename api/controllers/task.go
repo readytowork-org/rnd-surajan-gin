@@ -46,7 +46,11 @@ func (cc TaskController) CreateTask(ctx *gin.Context) {
 }
 
 func (cc TaskController) GetAllTasks(ctx *gin.Context) {
-	tasks, result := cc.taskService.GetAllTasks()
+	// Get Query Params if any available, otherwise set them to defaults
+	pageNo := ctx.DefaultQuery("page", "1")
+	pageSize := ctx.DefaultQuery("pageSize", "5")
+	// Task Service
+	tasks, result := cc.taskService.GetAllTasks(pageNo, pageSize)
 	// Error Handling.
 	if result.Error != nil {
 		ctx.JSON(http.StatusNotFound, gin.H{
