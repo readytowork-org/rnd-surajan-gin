@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"math"
 	"net/http"
 	"rnd-surajan-gin/api/services"
 	"rnd-surajan-gin/dtos"
@@ -52,18 +53,26 @@ func (cc TaskController) GetAllTasks(ctx *gin.Context) {
 	defaultPageNo, defaultPageSize := pagination.DefaultPageVariables()
 	pageNo := ctx.DefaultQuery("page", strconv.Itoa(defaultPageNo))
 	pageSize := ctx.DefaultQuery("pageSize", strconv.Itoa(defaultPageSize))
+	// For counting total data in the database
+	var count int64
 	// Task Service
-	tasks, result := cc.taskService.GetAllTasks(pageNo, pageSize, defaultPageSize)
+	tasks, totalDataResult, result := cc.taskService.GetAllTasks(pageNo, pageSize, defaultPageSize, &count)
 	// Error Handling.
-	if result.Error != nil {
+	if result.Error != nil && totalDataResult.Error != nil {
 		ctx.JSON(http.StatusNotFound, gin.H{
 			"error": "Tasks could not be found",
 		})
 		return
 	}
+	// Convert pageSize from query params to int
+	pg, _ := strconv.Atoi(pageSize)
 	// Send found "Tasks" as response.
 	ctx.JSON(http.StatusOK, gin.H{
-		"data": tasks,
+		"data":       tasks,
+		"page":       pageNo,
+		"pageSize":   pageSize,
+		"totalData":  count,
+		"totalPages": math.Ceil(float64(count) / float64(pg)),
 	})
 }
 

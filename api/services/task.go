@@ -22,10 +22,11 @@ func (cc TaskService) CreateTask(task models.Task) (data models.Task, err error)
 	return task, cc.db.DB.Create(&task).Error
 }
 
-func (cc TaskService) GetAllTasks(pageNo, pageSize string, defaultPageSize int) (data []models.Task, result *gorm.DB) {
+func (cc TaskService) GetAllTasks(pageNo, pageSize string, defaultPageSize int, count *int64) (data []models.Task, totalDataResult *gorm.DB, result *gorm.DB) {
 	var tasks []models.Task
 	// Using Gorm scopes, we can reuse query logic, like the pagination logic => db.Offset().Limit()
-	return tasks, cc.db.DB.Scopes(pagination.Paginate(pageNo, pageSize, defaultPageSize)).Find(&tasks)
+	// The .Count(count) counts total data in our database.
+	return tasks, cc.db.DB.Find(&tasks).Count(count), cc.db.DB.Scopes(pagination.Paginate(pageNo, pageSize, defaultPageSize)).Find(&tasks)
 }
 
 func (cc TaskService) GetTaskById(id string) (data models.Task, result *gorm.DB) {

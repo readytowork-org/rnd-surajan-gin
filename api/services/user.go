@@ -22,11 +22,13 @@ func (cc UserService) CreateUser(user models.User) (data models.User, err error)
 }
 
 // Get users without password
-func (cc UserService) GetAllUsers(pageNo, pageSize string, defaultPageSize int) (data []dtos.GetUserByIdResponse, result *gorm.DB) {
+func (cc UserService) GetAllUsers(pageNo, pageSize string, defaultPageSize int, count *int64) (data []dtos.GetUserByIdResponse, totalDataResult *gorm.DB, result *gorm.DB) {
 	// This is for getting user without password. We create a separate struct. This is also called "Smart Select Fields" in Gorm.
 	var usersResponse []dtos.GetUserByIdResponse
+	// This is for counting total users in database
+	var users []models.User
 	// Preload all "Tasks" associated with each "User" and send them along with the found users.
-	return usersResponse, cc.db.DB.Model(&models.User{}).Preload("Tasks").Scopes(pagination.Paginate(pageNo, pageSize, defaultPageSize)).Find(&usersResponse)
+	return usersResponse, cc.db.DB.Find(&users).Count(count), cc.db.DB.Model(&models.User{}).Preload("Tasks").Scopes(pagination.Paginate(pageNo, pageSize, defaultPageSize)).Find(&usersResponse)
 }
 
 func (cc UserService) GetAllUsersWithPw() (data []models.User, result *gorm.DB) {

@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"math"
 	"net/http"
 	"rnd-surajan-gin/api/services"
 	"rnd-surajan-gin/dtos"
@@ -47,18 +48,25 @@ func (cc UserController) GetAllUsers(ctx *gin.Context) {
 	defaultPageNo, defaultPageSize := pagination.DefaultPageVariables()
 	pageNo := ctx.DefaultQuery("page", strconv.Itoa(defaultPageNo))
 	pageSize := ctx.DefaultQuery("pageSize", strconv.Itoa(defaultPageSize))
+	// For counting total data in the database
+	var count int64
 	// User Service
-	users, result := cc.userService.GetAllUsers(pageNo, pageSize, defaultPageSize)
+	users, totalDataResult, result := cc.userService.GetAllUsers(pageNo, pageSize, defaultPageSize, &count)
 	// Error Handling.
-	if result.Error != nil {
+	if result.Error != nil && totalDataResult.Error != nil {
 		ctx.JSON(http.StatusNotFound, gin.H{
 			"error": "Users could not be found",
 		})
 		return
 	}
+	pg, _ := strconv.Atoi(pageSize)
 	// Send found "Users" as response.
 	ctx.JSON(http.StatusOK, gin.H{
-		"data": users,
+		"data":       users,
+		"page":       pageNo,
+		"pageSize":   pageSize,
+		"totalData":  count,
+		"totalPages": math.Ceil(float64(count) / float64(pg)),
 	})
 }
 
