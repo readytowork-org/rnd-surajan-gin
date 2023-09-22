@@ -5,6 +5,8 @@ import (
 	"rnd-surajan-gin/api/services"
 	"rnd-surajan-gin/dtos"
 	"rnd-surajan-gin/models"
+	"rnd-surajan-gin/pagination"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -47,10 +49,11 @@ func (cc TaskController) CreateTask(ctx *gin.Context) {
 
 func (cc TaskController) GetAllTasks(ctx *gin.Context) {
 	// Get Query Params if any available, otherwise set them to defaults
-	pageNo := ctx.DefaultQuery("page", "1")
-	pageSize := ctx.DefaultQuery("pageSize", "5")
+	defaultPageNo, defaultPageSize := pagination.DefaultPageVariables()
+	pageNo := ctx.DefaultQuery("page", strconv.Itoa(defaultPageNo))
+	pageSize := ctx.DefaultQuery("pageSize", strconv.Itoa(defaultPageSize))
 	// Task Service
-	tasks, result := cc.taskService.GetAllTasks(pageNo, pageSize)
+	tasks, result := cc.taskService.GetAllTasks(pageNo, pageSize, defaultPageSize)
 	// Error Handling.
 	if result.Error != nil {
 		ctx.JSON(http.StatusNotFound, gin.H{

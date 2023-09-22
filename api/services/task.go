@@ -4,7 +4,7 @@ import (
 	"rnd-surajan-gin/dtos"
 	"rnd-surajan-gin/infrastructure"
 	"rnd-surajan-gin/models"
-	"strconv"
+	"rnd-surajan-gin/pagination"
 
 	"gorm.io/gorm"
 )
@@ -22,26 +22,10 @@ func (cc TaskService) CreateTask(task models.Task) (data models.Task, err error)
 	return task, cc.db.DB.Create(&task).Error
 }
 
-func (cc TaskService) GetAllTasks(pageNo, pageSize string) (data []models.Task, result *gorm.DB) {
+func (cc TaskService) GetAllTasks(pageNo, pageSize string, defaultPageSize int) (data []models.Task, result *gorm.DB) {
 	var tasks []models.Task
-	limit, offset := CalculatePagination(pageNo, pageSize)
-	return tasks, cc.db.DB.Limit(limit).Offset(offset).Find(&tasks)
-}
-
-func CalculatePagination(pageNo, pageSize string) (int, int) {
-	// strconv.Atoi converts string to int
-	limit, _ := strconv.Atoi(pageSize)
-	pgNo, _ := strconv.Atoi(pageNo)
-	// Don't need to check if pgNo is <= 0, if it is, data will be shown of pgNo=1
-	// Calculate Offset
-	if limit > 100 {
-		limit = 100
-	} else if limit <= 0 {
-		limit = 5
-	}
-	offset := (pgNo - 1) * limit
-	// Return limit and offset
-	return limit, offset
+	// Using Gorm scopes, we can reuse query logic, like the pagination logic => db.Offset().Limit()
+	return tasks, cc.db.DB.Scopes(pagination.Paginate(pageNo, pageSize, defaultPageSize)).Find(&tasks)
 }
 
 func (cc TaskService) GetTaskById(id string) (data models.Task, result *gorm.DB) {
