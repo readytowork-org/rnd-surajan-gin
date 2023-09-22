@@ -4,6 +4,7 @@ import (
 	"rnd-surajan-gin/dtos"
 	"rnd-surajan-gin/infrastructure"
 	"rnd-surajan-gin/models"
+	"rnd-surajan-gin/pagination"
 
 	"gorm.io/gorm"
 )
@@ -21,11 +22,11 @@ func (cc UserService) CreateUser(user models.User) (data models.User, err error)
 }
 
 // Get users without password
-func (cc UserService) GetAllUsers() (data []dtos.GetUserByIdResponse, result *gorm.DB) {
+func (cc UserService) GetAllUsers(pageNo, pageSize string, defaultPageSize int) (data []dtos.GetUserByIdResponse, result *gorm.DB) {
 	// This is for getting user without password. We create a separate struct. This is also called "Smart Select Fields" in Gorm.
 	var usersResponse []dtos.GetUserByIdResponse
 	// Preload all "Tasks" associated with each "User" and send them along with the found users.
-	return usersResponse, cc.db.DB.Model(&models.User{}).Preload("Tasks").Find(&usersResponse)
+	return usersResponse, cc.db.DB.Model(&models.User{}).Preload("Tasks").Scopes(pagination.Paginate(pageNo, pageSize, defaultPageSize)).Find(&usersResponse)
 }
 
 func (cc UserService) GetAllUsersWithPw() (data []models.User, result *gorm.DB) {

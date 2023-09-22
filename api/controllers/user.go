@@ -5,6 +5,8 @@ import (
 	"rnd-surajan-gin/api/services"
 	"rnd-surajan-gin/dtos"
 	"rnd-surajan-gin/models"
+	"rnd-surajan-gin/pagination"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -42,7 +44,11 @@ func (cc UserController) CreateUser(ctx *gin.Context) {
 }
 
 func (cc UserController) GetAllUsers(ctx *gin.Context) {
-	users, result := cc.userService.GetAllUsers()
+	defaultPageNo, defaultPageSize := pagination.DefaultPageVariables()
+	pageNo := ctx.DefaultQuery("page", strconv.Itoa(defaultPageNo))
+	pageSize := ctx.DefaultQuery("pageSize", strconv.Itoa(defaultPageSize))
+	// User Service
+	users, result := cc.userService.GetAllUsers(pageNo, pageSize, defaultPageSize)
 	// Error Handling.
 	if result.Error != nil {
 		ctx.JSON(http.StatusNotFound, gin.H{
