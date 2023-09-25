@@ -24,6 +24,7 @@ func (cc TaskRoutes) Setup() {
 		routes.GET("/:id", cc.taskController.GetTaskById)
 		routes.POST("", cc.taskController.CreateTask)
 		routes.PATCH("/:id", cc.taskController.UpdateTaskById)
+		routes.PATCH("/status/:id", cc.taskController.UpdateTaskStatus)
 		routes.DELETE("/:id", cc.taskController.DeleteTaskById)
 	}
 }

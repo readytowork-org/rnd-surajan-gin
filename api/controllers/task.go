@@ -145,3 +145,42 @@ func (cc TaskController) DeleteTaskById(ctx *gin.Context) {
 		"message": "Task successfully deleted",
 	})
 }
+
+func (cc TaskController) UpdateTaskStatus(ctx *gin.Context) {
+	// Get Id from route parameters.
+	id := ctx.Param("id")
+	// Validate request body.
+	var body dtos.UpdateTaskStatus
+	// This validates payload's key
+	if err := ctx.BindJSON(&body); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	// This validates payload's value i.e. status values if they match the 3 statuses provided by us.
+	if !body.IsValidStatus() {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": "Invalid status",
+		})
+		return
+	}
+	data, findErr, updateErr := cc.taskService.UpdateTaskStatus(id, string(body.Status))
+	// Error Handling.
+	if findErr != nil {
+		ctx.JSON(http.StatusNotFound, gin.H{
+			"error": "Task could not be found",
+		})
+		return
+	}
+	if updateErr != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": "Could not update task status",
+		})
+		return
+	}
+	// Send found and updated "Task" as response.
+	ctx.JSON(http.StatusOK, gin.H{
+		"data": data,
+	})
+}
