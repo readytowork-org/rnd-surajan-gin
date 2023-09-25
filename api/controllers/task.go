@@ -192,12 +192,31 @@ func (cc TaskController) GetTaskByUserIdAndStatus(ctx *gin.Context) {
 	// Error Handling.
 	if result.Error != nil {
 		ctx.JSON(http.StatusNotFound, gin.H{
-			"error": "Task could not be found",
+			"error": "Tasks could not be found",
 		})
 		return
 	}
 	// Send found "Task" as response.
 	ctx.JSON(http.StatusOK, gin.H{
 		"data": tasks,
+	})
+}
+
+func (cc TaskController) GetTaskReportByUserId(ctx *gin.Context) {
+	userId := ctx.Param("id")
+	var todoCount, inProgressCount, doneCount int64
+	todoResult, inProgressResult, doneResult := cc.taskService.GetTaskReportByUserId(userId, &todoCount, &inProgressCount, &doneCount)
+	// Error Handling.
+	if todoResult.Error != nil || inProgressResult.Error != nil || doneResult.Error != nil {
+		ctx.JSON(http.StatusNotFound, gin.H{
+			"error": "Tasks could not be found",
+		})
+		return
+	}
+	// Send found "Task" as response.
+	ctx.JSON(http.StatusOK, gin.H{
+		"to_do":       todoCount,
+		"in_progress": inProgressCount,
+		"done":        doneCount,
 	})
 }

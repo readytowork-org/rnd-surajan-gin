@@ -77,3 +77,11 @@ func (cc TaskService) GetTaskByUserIdAndStatus(userId string, status string) (da
 	}
 	return tasks, query.Find(&tasks)
 }
+
+func (cc TaskService) GetTaskReportByUserId(userId string, todoCount *int64, inProgressCount *int64, doneCount *int64) (todoResult *gorm.DB, inProgressResult *gorm.DB, doneResult *gorm.DB) {
+	var tasks []models.Task
+	queryTodo := cc.db.DB.Where("user_id = ? AND status = ?", userId, "to_do")
+	queryInProgress := cc.db.DB.Where("user_id = ? AND status = ?", userId, "in_progress")
+	queryDone := cc.db.DB.Where("user_id = ? AND status = ?", userId, "done")
+	return queryTodo.Find(&tasks).Count(todoCount), queryInProgress.Find(&tasks).Count(inProgressCount), queryDone.Find(&tasks).Count(doneCount)
+}
