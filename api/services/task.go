@@ -68,3 +68,12 @@ func (cc TaskService) UpdateTaskStatus(id string, newStatus string) (data models
 	updateResult := cc.db.DB.Model(&task).Update("status", newStatus)
 	return task, result.Error, updateResult.Error
 }
+
+func (cc TaskService) GetTaskByUserIdAndStatus(userId string, status string) (data []models.Task, result *gorm.DB) {
+	var tasks []models.Task
+	query := cc.db.DB.Where("user_id = ?", userId)
+	if status != "" {
+		query = cc.db.DB.Where("user_id = ? AND status = ?", userId, status)
+	}
+	return tasks, query.Find(&tasks)
+}

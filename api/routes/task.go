@@ -21,6 +21,7 @@ func (cc TaskRoutes) Setup() {
 	routes := cc.router.Gin.Group("/tasks", cc.jwtAuthMiddleware.HandleJwt)
 	{
 		routes.GET("", cc.taskController.GetAllTasks)
+		routes.GET("/byUser/:id", cc.taskController.GetTaskByUserIdAndStatus)
 		routes.GET("/:id", cc.taskController.GetTaskById)
 		routes.POST("", cc.taskController.CreateTask)
 		routes.PATCH("/:id", cc.taskController.UpdateTaskById)

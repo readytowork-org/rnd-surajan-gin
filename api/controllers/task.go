@@ -184,3 +184,20 @@ func (cc TaskController) UpdateTaskStatus(ctx *gin.Context) {
 		"data": data,
 	})
 }
+
+func (cc TaskController) GetTaskByUserIdAndStatus(ctx *gin.Context) {
+	userId := ctx.Param("id")
+	status := ctx.DefaultQuery("status", "")
+	tasks, result := cc.taskService.GetTaskByUserIdAndStatus(userId, status)
+	// Error Handling.
+	if result.Error != nil {
+		ctx.JSON(http.StatusNotFound, gin.H{
+			"error": "Task could not be found",
+		})
+		return
+	}
+	// Send found "Task" as response.
+	ctx.JSON(http.StatusOK, gin.H{
+		"data": tasks,
+	})
+}
