@@ -12,6 +12,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 // Dependency Injection
@@ -27,6 +28,8 @@ func NewTaskController(taskService services.TaskService) TaskController {
 }
 
 func (cc TaskController) CreateTask(ctx *gin.Context) {
+	// Get UserId from JWT (set by jwt middleware using ctx.Set())
+	userId := fmt.Sprintf("%v", ctx.MustGet(constants.UserId))
 	var body dtos.CreateTaskRequest
 	// Validate request body.
 	if err := ctx.BindJSON(&body); err != nil {
@@ -35,8 +38,16 @@ func (cc TaskController) CreateTask(ctx *gin.Context) {
 		})
 		return
 	}
+	// Parse string into uuid.UUID data type
+	parsedUUID, err := uuid.Parse(userId)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": "Could not parse user_id",
+		})
+		return
+	}
 	// Create Task.
-	task := models.Task{Title: body.Title, UserId: body.UserId}
+	task := models.Task{Title: body.Title, UserId: parsedUUID}
 	data, err := cc.taskService.CreateTask(task)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
@@ -96,6 +107,8 @@ func (cc TaskController) GetTaskById(ctx *gin.Context) {
 }
 
 func (cc TaskController) UpdateTaskById(ctx *gin.Context) {
+	// Get UserId from JWT (set by jwt middleware using ctx.Set())
+	userId := fmt.Sprintf("%v", ctx.MustGet(constants.UserId))
 	// Get Id from route parameters.
 	id := ctx.Param("id")
 	// Validate request body.
@@ -106,7 +119,7 @@ func (cc TaskController) UpdateTaskById(ctx *gin.Context) {
 		})
 		return
 	}
-	data, findErr, updateErr := cc.taskService.UpdateTaskById(id, body)
+	data, findErr, updateErr := cc.taskService.UpdateTaskById(id, userId, body)
 	// Error Handling.
 	if findErr != nil {
 		ctx.JSON(http.StatusNotFound, gin.H{
@@ -127,9 +140,11 @@ func (cc TaskController) UpdateTaskById(ctx *gin.Context) {
 }
 
 func (cc TaskController) DeleteTaskById(ctx *gin.Context) {
+	// Get UserId from JWT (set by jwt middleware using ctx.Set())
+	userId := fmt.Sprintf("%v", ctx.MustGet(constants.UserId))
 	// Get Id from route parameters.
 	id := ctx.Param("id")
-	result := cc.taskService.DeleteTaskById(id)
+	result := cc.taskService.DeleteTaskById(id, userId)
 	// Error Handling.
 	if result.Error != nil {
 		ctx.JSON(http.StatusNotFound, gin.H{
@@ -191,7 +206,8 @@ func (cc TaskController) UpdateTaskStatus(ctx *gin.Context) {
 }
 
 func (cc TaskController) GetTaskByUserIdAndStatus(ctx *gin.Context) {
-	userId := ctx.Param("id")
+	// Get UserId from JWT (set by jwt middleware using ctx.Set())
+	userId := fmt.Sprintf("%v", ctx.MustGet(constants.UserId))
 	status := ctx.DefaultQuery("status", "")
 	tasks, result := cc.taskService.GetTaskByUserIdAndStatus(userId, status)
 	// Error Handling.
@@ -208,7 +224,8 @@ func (cc TaskController) GetTaskByUserIdAndStatus(ctx *gin.Context) {
 }
 
 func (cc TaskController) GetTaskReportByUserId(ctx *gin.Context) {
-	userId := ctx.Param("id")
+	// Get UserId from JWT (set by jwt middleware using ctx.Set())
+	userId := fmt.Sprintf("%v", ctx.MustGet(constants.UserId))
 	var todoCount, inProgressCount, doneCount int64
 	todoResult, inProgressResult, doneResult := cc.taskService.GetTaskReportByUserId(userId, &todoCount, &inProgressCount, &doneCount)
 	// Error Handling.

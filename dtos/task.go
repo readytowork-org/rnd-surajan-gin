@@ -3,7 +3,7 @@ package dtos
 import "rnd-surajan-gin/models"
 
 type CreateTaskRequest struct {
-	models.Task
+	Title string `json:"title" binding:"required"`
 }
 
 type UpdateTaskRequest struct {
