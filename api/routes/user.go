@@ -28,4 +28,6 @@ func (cc UserRoutes) Setup() {
 		routes.PATCH("/:id", cc.userController.UpdateUserById)
 		routes.DELETE("/:id", cc.userController.DeleteUserById)
 	}
+	// Register User
+	cc.router.Gin.POST("/register", cc.userController.CreateUser)
 }
