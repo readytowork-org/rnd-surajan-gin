@@ -6,6 +6,9 @@ type CreateTaskRequest struct {
 	Title string `json:"title" binding:"required"`
 }
 
+type CreateTaskByFormDataRequest struct {
+	Title string `form:"title" binding:"required"`
+}
 type UpdateTaskRequest struct {
 	Title string `json:"title" binding:"required"`
 }

@@ -12,6 +12,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
 	"github.com/google/uuid"
 )
 
@@ -240,5 +241,42 @@ func (cc TaskController) GetTaskReportByUserId(ctx *gin.Context) {
 		"to_do":       todoCount,
 		"in_progress": inProgressCount,
 		"done":        doneCount,
+	})
+}
+
+// To learn Formdata parsing
+func (cc TaskController) CreateTaskByFormdata(ctx *gin.Context) {
+	// Get UserId from JWT (set by jwt middleware using ctx.Set())
+	userId := fmt.Sprintf("%v", ctx.MustGet(constants.UserId))
+	var body dtos.CreateTaskByFormDataRequest
+	// Validate formdata body.
+	// `Bind(&body)` will accept any type of body: formdata, json, etc. It automatically adapts to the payload type
+	// `ShouldBindWith(&body,binding.Form)` will only allow formdata body. `ShouldBindWith` is more performant than `ShouldBindBodyWith` as the latter will store body data into context
+	if err := ctx.ShouldBindWith(&body, binding.Form); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	// Parse string into uuid.UUID data type
+	parsedUUID, err := uuid.Parse(userId)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": "Could not parse user_id",
+		})
+		return
+	}
+	// Create Task.
+	task := models.Task{Title: body.Title, UserId: parsedUUID}
+	data, err := cc.taskService.CreateTask(task)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": "Could not create task",
+		})
+		return
+	}
+	// Send created "Task" as response.
+	ctx.JSON(http.StatusOK, gin.H{
+		"task": data,
 	})
 }
