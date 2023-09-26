@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math"
 	"net/http"
+	"path/filepath"
 	"rnd-surajan-gin/api/services"
 	"rnd-surajan-gin/constants"
 	"rnd-surajan-gin/dtos"
@@ -244,7 +245,7 @@ func (cc TaskController) GetTaskReportByUserId(ctx *gin.Context) {
 	})
 }
 
-// To learn Formdata parsing
+// Formdata parsing
 func (cc TaskController) CreateTaskByFormdata(ctx *gin.Context) {
 	// Get UserId from JWT (set by jwt middleware using ctx.Set())
 	userId := fmt.Sprintf("%v", ctx.MustGet(constants.UserId))
@@ -278,5 +279,31 @@ func (cc TaskController) CreateTaskByFormdata(ctx *gin.Context) {
 	// Send created "Task" as response.
 	ctx.JSON(http.StatusOK, gin.H{
 		"task": data,
+	})
+}
+
+// File upload
+func (cc TaskController) HandleFileUpload(ctx *gin.Context) {
+	// Get single file
+	file, err := ctx.FormFile("file")
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	// Using "filepath" package to create an "uploads" folder in the root directory.
+	// ALERT ❗: If same name file exists then new one replaces the old one.
+	destinationPath := filepath.Join("uploads", file.Filename)
+	// Upload file to specific destination
+	if err := ctx.SaveUploadedFile(file, destinationPath); err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	// Send created "Task" as response.
+	ctx.JSON(http.StatusOK, gin.H{
+		"data": "File successfully uploaded",
 	})
 }

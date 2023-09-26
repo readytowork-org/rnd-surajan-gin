@@ -28,6 +28,7 @@ func (cc TaskRoutes) Setup() {
 		// Post
 		routes.POST("", cc.taskController.CreateTask)
 		routes.POST("/byFormdata", cc.taskController.CreateTaskByFormdata)
+		routes.POST("/uploadFile", cc.taskController.HandleFileUpload)
 		// Patch
 		routes.PATCH("/:id", cc.taskController.UpdateTaskById)
 		routes.PATCH("/status/:id", cc.taskController.UpdateTaskStatus)
