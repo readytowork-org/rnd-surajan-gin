@@ -64,3 +64,15 @@ func (cc JwtAuthService) ParseAndVerifyToken(tokenString string, secret string) 
 	}
 	return token, nil
 }
+
+func (CC JwtAuthService) RetrieveClaims(token *jwt.Token) (*JwtClaims, error) {
+	// Verify token
+	// The `token.Claims` extracts the claims
+	// The `token.Claims.(*JwtClaims)` means that we are changing the type of claims to our custom type called `JwtClaims`
+	// This is called `Type Assertions in Go`
+	claims, ok := token.Claims.(*JwtClaims)
+	if !ok || !token.Valid {
+		return nil, errors.New("invalid token")
+	}
+	return claims, nil
+}

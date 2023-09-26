@@ -1,9 +1,11 @@
 package controllers
 
 import (
+	"fmt"
 	"math"
 	"net/http"
 	"rnd-surajan-gin/api/services"
+	"rnd-surajan-gin/constants"
 	"rnd-surajan-gin/dtos"
 	"rnd-surajan-gin/models"
 	"rnd-surajan-gin/pagination"
@@ -147,6 +149,8 @@ func (cc TaskController) DeleteTaskById(ctx *gin.Context) {
 }
 
 func (cc TaskController) UpdateTaskStatus(ctx *gin.Context) {
+	// Get UserId from JWT (set by jwt middleware using ctx.Set())
+	userId := fmt.Sprintf("%v", ctx.MustGet(constants.UserId))
 	// Get Id from route parameters.
 	id := ctx.Param("id")
 	// Validate request body.
@@ -165,7 +169,8 @@ func (cc TaskController) UpdateTaskStatus(ctx *gin.Context) {
 		})
 		return
 	}
-	data, findErr, updateErr := cc.taskService.UpdateTaskStatus(id, string(body.Status))
+	// Only that user who owns this task can update it's status
+	data, findErr, updateErr := cc.taskService.UpdateTaskStatus(id, userId, string(body.Status))
 	// Error Handling.
 	if findErr != nil {
 		ctx.JSON(http.StatusNotFound, gin.H{

@@ -60,10 +60,11 @@ func (cc TaskService) DeleteTaskById(id string) (result *gorm.DB) {
 	return cc.db.DB.Where("id = ?", id).Unscoped().Delete(&task)
 }
 
-func (cc TaskService) UpdateTaskStatus(id string, newStatus string) (data models.Task, findErr error, updateErr error) {
+func (cc TaskService) UpdateTaskStatus(id string, userId string, newStatus string) (data models.Task, findErr error, updateErr error) {
 	// Get Task by id i.e. Primary Key.
 	var task models.Task
-	result := cc.db.DB.Where("id = ?", id).First(&task)
+	// Only that user who owns this task can update it's status
+	result := cc.db.DB.Where("id = ? AND user_id = ?", id, userId).First(&task)
 	// Update status
 	updateResult := cc.db.DB.Model(&task).Update("status", newStatus)
 	return task, result.Error, updateResult.Error
